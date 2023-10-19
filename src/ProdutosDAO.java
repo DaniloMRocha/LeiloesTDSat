@@ -10,9 +10,14 @@
 
 import java.sql.PreparedStatement;
 import java.sql.Connection;
+import java.sql.Statement;
 import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 
 public class ProdutosDAO {
@@ -33,43 +38,70 @@ public class ProdutosDAO {
             
         }
 
-    // SQL para inserir um novo item na tabela (substitua "sua_tabela" pelo nome da sua tabela)
+        // SQL para inserir um novo item na tabela (substitua "sua_tabela" pelo nome da sua tabela)
         String sql = "INSERT INTO produtos (nome, valor, status) VALUES (?, ?, ?)";
 
-    try {
-        PreparedStatement preparedStatement = conn.prepareStatement(sql);
-        preparedStatement.setString(1, produto.getNome());
-        preparedStatement.setInt(2, produto.getValor());
-        preparedStatement.setString(3, produto.getStatus());
-
-        // Executa a consulta de inserção
-        int linhasAfetadas = preparedStatement.executeUpdate();
-
-        if (linhasAfetadas > 0) {
-            JOptionPane.showMessageDialog(null, "Novo produto inserido com sucesso");
-        } else {
-            JOptionPane.showMessageDialog(null, "Falha ao inserir o novo produto");
-        }
-
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "Ocorreu um erro: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-    } finally {
         try {
-            conn.close(); // Fecha a conexão com o banco de dados
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, produto.getNome());
+            preparedStatement.setInt(2, produto.getValor());
+            preparedStatement.setString(3, produto.getStatus());
+
+            // Executa a consulta de inserção
+            int linhasAfetadas = preparedStatement.executeUpdate();
+
+            if (linhasAfetadas > 0) {
+                JOptionPane.showMessageDialog(null, "Novo produto inserido com sucesso");
+            } else {
+                JOptionPane.showMessageDialog(null, "Falha ao inserir o novo produto");
+            }
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Ocorreu um erro: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try {
+                conn.close(); // Fecha a conexão com o banco de dados
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Ocorreu um erro: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            }
         }
-    }
         
     }
     
     public ArrayList<ProdutosDTO> listarProdutos(){
         
-        return listagem;
+        
+        ArrayList<ProdutosDTO> listaProdutos = new ArrayList<>();
+
+        try {
+            conn = new conectaDAO().connectDB();
+            String sql = "SELECT * FROM produtos";
+            Statement statement = conn.createStatement();
+            ResultSet result = statement.executeQuery(sql);
+
+            while (result.next()) {
+                int id = result.getInt("id");
+                String nome = result.getString("nome");
+                int valor = result.getInt("valor");
+                String status = result.getString("status");
+                ProdutosDTO produto = new ProdutosDTO();
+                produto.setId(id);         
+                produto.setNome(nome);     
+                produto.setValor(valor);   
+                produto.setStatus(status);
+                listaProdutos.add(produto);
+            }
+            conn.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ocorreu um erro ao listar os produtos: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        return listaProdutos;
     }
     
-    
+
+}
     
         
-}
+
 
