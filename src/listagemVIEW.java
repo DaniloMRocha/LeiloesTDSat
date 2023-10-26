@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -137,11 +138,21 @@ public class listagemVIEW extends javax.swing.JFrame {
 
     private void btnVenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVenderActionPerformed
         String id = id_produto_venda.getText();
-        
-        ProdutosDAO produtosdao = new ProdutosDAO();
-        
-        //produtosdao.venderProduto(Integer.parseInt(id));
-        listarProdutos();
+    
+        if (!id.isEmpty()) {
+            try {
+                int produtoId = Integer.parseInt(id);
+
+                ProdutosDAO produtosdao = new ProdutosDAO();
+                produtosdao.venderProduto(produtoId);
+
+                listarProdutos(); // Atualize a tabela após vender o produto
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "O ID do produto deve ser um número válido.", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor, insira o ID do produto para vender.", "Erro", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_btnVenderActionPerformed
 
     private void btnVendasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVendasActionPerformed

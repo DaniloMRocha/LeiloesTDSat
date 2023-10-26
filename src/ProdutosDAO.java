@@ -70,7 +70,6 @@ public class ProdutosDAO {
     
     public ArrayList<ProdutosDTO> listarProdutos(){
         
-        
         ArrayList<ProdutosDTO> listaProdutos = new ArrayList<>();
 
         try {
@@ -98,6 +97,20 @@ public class ProdutosDAO {
         
         return listaProdutos;
     }
+    
+    public void venderProduto(int id) {
+    try {
+        conn = new conectaDAO().connectDB();
+        String sql = "UPDATE produtos SET status = 'Vendido' WHERE id = ?";
+        PreparedStatement preparedStatement = conn.prepareStatement(sql);
+        preparedStatement.setInt(1, id);
+        preparedStatement.executeUpdate();
+        conn.close();
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Ocorreu um erro ao vender o produto: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
     
 
 }
