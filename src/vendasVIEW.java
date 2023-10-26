@@ -1,3 +1,7 @@
+
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -14,6 +18,7 @@ public class vendasVIEW extends javax.swing.JFrame {
      */
     public vendasVIEW() {
         initComponents();
+        listarProdutosVendidos();
     }
 
     /**
@@ -133,4 +138,26 @@ public class vendasVIEW extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable listaProdutosVendidos;
     // End of variables declaration//GEN-END:variables
+
+private void listarProdutosVendidos() {
+    try {
+        ProdutosDAO produtosDAO = new ProdutosDAO();
+        DefaultTableModel model = (DefaultTableModel) listaProdutosVendidos.getModel();
+        model.setNumRows(0); // Limpa a tabela antes de preencher com os novos dados
+
+        ArrayList<ProdutosDTO> produtosVendidos = produtosDAO.listarProdutosVendidos();
+
+        for (ProdutosDTO produto : produtosVendidos) {
+            model.addRow(new Object[] {
+                produto.getId(),
+                produto.getNome(),
+                produto.getValor(),
+                produto.getStatus()
+            });
+        }
+    } catch (Exception e) {
+        // Trate possíveis exceções aqui, por exemplo, mostrando uma mensagem de erro.
+    }
+}    
+
 }
